@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 
 # Create your views here.
 dct = {
@@ -24,4 +24,5 @@ def get_tasks_withDayNumber(request, day_of_the_week: int):
     if day_of_the_week < 1 or day_of_the_week > 7:
         return HttpResponse(f"Неверный номер дня - {day_of_the_week}")
     else:
-        return HttpResponse(f"Сегодня {day_of_the_week} день недели")
+        dayNumber = list(dct)[day_of_the_week - 1]
+        return HttpResponseRedirect(f"/todo_week/{dayNumber}")

@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 
 # Create your views here.
 
@@ -28,6 +28,10 @@ def get_info_about_sign_zodiac(request, sign_zodiac: str):
     else:
         return HttpResponseNotFound(f"Неизвестный знак зодиака - {sign_zodiac}")
 
-def get_info_about_sign_zodiac_by_number(request, sign_zodiac: int):
-    return HttpResponse(f"This is number {sign_zodiac}")
 
+def get_info_about_sign_zodiac_by_number(request, sign_zodiac: int):
+    if sign_zodiac < len(zodiac_dict) and sign_zodiac > 0:
+        zodiac_name = list(zodiac_dict)[sign_zodiac - 1]
+        return HttpResponseRedirect(f"/horoscope/{zodiac_name}")  # редирект
+    else:
+        return HttpResponse(f"Неправильный порядковый номер знака зодиака - {sign_zodiac}")
