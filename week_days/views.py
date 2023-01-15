@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
 dct = {
@@ -25,4 +26,5 @@ def get_tasks_withDayNumber(request, day_of_the_week: int):
         return HttpResponse(f"Неверный номер дня - {day_of_the_week}")
     else:
         dayNumber = list(dct)[day_of_the_week - 1]
-        return HttpResponseRedirect(f"/todo_week/{dayNumber}")
+        redirect_url = reverse("todo_week_url", args=(dayNumber,))
+        return HttpResponseRedirect(redirect_url)
