@@ -1,7 +1,8 @@
+from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 from datetime import date
-
+from django.template.loader import render_to_string
 # Create your views here.
 
 zodiac_dict = {
@@ -30,6 +31,14 @@ zodiac_dict = {
 
 }
 
+def  get_yyyy_converters(request, sign_zodiac):
+    return HttpResponse(f"Вы передали число из 4х цифр - {sign_zodiac}")
+
+def  get_my_float_converters(request, sign_zodiac):
+    return HttpResponse(f"Вы передали вещественное число - {sign_zodiac}")
+
+def  get_my_date_converters(request, sign_zodiac):
+    return HttpResponse(f"Вы передали дату - {sign_zodiac}")
 
 def index(request):
     zodiacs = list(zodiac_dict)  # список всех знаков (ключей)
@@ -80,12 +89,16 @@ def elements(request, type_of_el):
         return HttpResponse(f"Нет такой стихии - '<b>{type_of_el}</b>'")
 
 
+# def get_info_about_sign_zodiac(request, sign_zodiac: str):
+#     description = zodiac_dict.get(sign_zodiac, None)  # значение по ключу из zodiac_dict
+#     if description:
+#         return HttpResponse(description[0])
+#     else:
+#         return HttpResponseNotFound(f"Неизвестный знак зодиака - {sign_zodiac}")
+
+
 def get_info_about_sign_zodiac(request, sign_zodiac: str):
-    description = zodiac_dict.get(sign_zodiac, None)  # значение по ключу из zodiac_dict
-    if description:
-        return HttpResponse(description[0])
-    else:
-        return HttpResponseNotFound(f"Неизвестный знак зодиака - {sign_zodiac}")
+    return render(request, 'horoscope/info_zodiac.html')
 
 
 def get_info_about_sign_zodiac_by_number(request, sign_zodiac: int):

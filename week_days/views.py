@@ -13,6 +13,8 @@ dct = {
     'sunday': 'в воскресенье - иду на рождество'
 }
 
+def greeting(request):
+    return render(request, 'week_days/greeting.html')
 
 def get_tasks(request, day_of_the_week: str):
     if day_of_the_week in dct:
