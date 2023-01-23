@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню</title>
+</head>
+<body>
+<ul>
+    {% for zodiac in zodiacs %}
+        <li><a href="{% url 'horoscope_name' sign_zodiac=zodiac%}">{{ zodiac|capfirst }}</a></li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+

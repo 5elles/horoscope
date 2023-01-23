@@ -3,56 +3,62 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 from datetime import date
 from django.template.loader import render_to_string
+from dataclasses import dataclass
+
 # Create your views here.
 
 zodiac_dict = {
 
     'aries': ('Овен - первый знак зодиака, планета Марс (с 21 марта по 20 апреля)', 'fire', {3: (21, 31), 4: (1, 20)}),
     'taurus': (
-    'Телец - второй знак зодиака, планета Венера (с 21 апреля по 21 мая).', 'taurus', {4: (21, 30), 5: (1, 21)}),
+        'Телец - второй знак зодиака, планета Венера (с 21 апреля по 21 мая).', 'taurus', {4: (21, 30), 5: (1, 21)}),
     'gemini': (
-    'Близнецы - третий знак зодиака, планета Меркурий (с 22 мая по 21 июня).', 'air', {5: (22, 31), 6: (1, 21)}),
+        'Близнецы - третий знак зодиака, планета Меркурий (с 22 мая по 21 июня).', 'air', {5: (22, 31), 6: (1, 21)}),
     'cancer': ('Рак - четвёртый знак зодиака, Луна (с 22 июня по 22 июля).', 'water', {6: (22, 30), 7: (1, 22)}),
     'leo': ('Лев - пятый знак зодиака, солнце (с 23 июля по 21 августа).', 'fire', {7: (23, 31), 8: (1, 21)}),
     'virgo': (
-    'Дева - шестой знак зодиака, планета Меркурий (с 22 августа по 23 сентября).', 'taurus', {8: (22, 31), 9: (1, 23)}),
+        'Дева - шестой знак зодиака, планета Меркурий (с 22 августа по 23 сентября).', 'taurus',
+        {8: (22, 31), 9: (1, 23)}),
     'libra': (
-    'Весы - седьмой знак зодиака, планета Венера (с 24 сентября по 23 октября).', 'air', {9: (24, 30), 10: (1, 23)}),
+        'Весы - седьмой знак зодиака, планета Венера (с 24 сентября по 23 октября).', 'air',
+        {9: (24, 30), 10: (1, 23)}),
     'scorpio': (
-    'Скорпион - восьмой знак зодиака, планета Марс (с 24 октября по 22 ноября).', 'water', {10: (24, 31), 11: (1, 22)}),
+        'Скорпион - восьмой знак зодиака, планета Марс (с 24 октября по 22 ноября).', 'water',
+        {10: (24, 31), 11: (1, 22)}),
     'sagittarius': (
-    'Стрелец - девятый знак зодиака, планета Юпитер (с 23 ноября по 22 декабря).', 'fire', {11: (23, 30), 12: (1, 22)}),
+        'Стрелец - девятый знак зодиака, планета Юпитер (с 23 ноября по 22 декабря).', 'fire',
+        {11: (23, 30), 12: (1, 22)}),
     'capricorn': ('Козерог - десятый знак зодиака, планета Сатурн (с 23 декабря по 20 января).', 'taurus',
                   {12: (23, 31), 1: (1, 20)}),
     'aquarius': ('Водолей - одиннадцатый знак зодиака, планеты Уран и Сатурн (с 21 января по 19 февраля).', 'air',
                  {1: (21, 31), 2: (1, 19)}),
     'pisces': (
-    'Рыбы - двенадцатый знак зодиака, планеты Юпитер (с 20 февраля по 20 марта).', 'water', {2: (20, 29), 3: (1, 20)})
+        'Рыбы - двенадцатый знак зодиака, планеты Юпитер (с 20 февраля по 20 марта).', 'water',
+        {2: (20, 29), 3: (1, 20)})
 
 }
 
-def  get_yyyy_converters(request, sign_zodiac):
+
+def get_yyyy_converters(request, sign_zodiac):
     return HttpResponse(f"Вы передали число из 4х цифр - {sign_zodiac}")
 
-def  get_my_float_converters(request, sign_zodiac):
+
+def get_my_float_converters(request, sign_zodiac):
     return HttpResponse(f"Вы передали вещественное число - {sign_zodiac}")
 
-def  get_my_date_converters(request, sign_zodiac):
+
+def get_my_date_converters(request, sign_zodiac):
     return HttpResponse(f"Вы передали дату - {sign_zodiac}")
+
 
 def index(request):
     zodiacs = list(zodiac_dict)  # список всех знаков (ключей)
-    li_elements = ""  # результирующая строка для упорядоч-го списка
-    for i in zodiacs:  # оборачиваем элементы списка в теги, добавляем ссылки.
-        redirect_path = reverse("horoscope_name", args=(i,))
-        li_elements += f"<li><a href='{redirect_path}'>{i.title()}</a></li>"
-    response = f"""
-    <ol>
-        {li_elements}
-    </ol>
-    """
-    return HttpResponse(response)
-
+    # f"<li><a href='{redirect_path}'>{i.title()}</a></li>"
+    context = {
+        "zodiacs": zodiacs,
+        "zodiac_dict": zodiac_dict
+    }
+    return render(request, "horoscope/index.html", context=context)
 
 def types(request):
     zodiac_elements = ''
@@ -89,16 +95,16 @@ def elements(request, type_of_el):
         return HttpResponse(f"Нет такой стихии - '<b>{type_of_el}</b>'")
 
 
-# def get_info_about_sign_zodiac(request, sign_zodiac: str):
-#     description = zodiac_dict.get(sign_zodiac, None)  # значение по ключу из zodiac_dict
-#     if description:
-#         return HttpResponse(description[0])
-#     else:
-#         return HttpResponseNotFound(f"Неизвестный знак зодиака - {sign_zodiac}")
-
-
 def get_info_about_sign_zodiac(request, sign_zodiac: str):
-    return render(request, 'horoscope/info_zodiac.html')
+    description = zodiac_dict.get(sign_zodiac, None)
+    if sign_zodiac in zodiac_dict:
+        data = {
+            "description_zodiac": description[0],
+            "sign": sign_zodiac,
+        }
+        return render(request, 'horoscope/info_zodiac.html', data)
+    else:
+        return render(request, 'horoscope/info_zodiac.html', None)
 
 
 def get_info_about_sign_zodiac_by_number(request, sign_zodiac: int):
