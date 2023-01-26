@@ -6,7 +6,7 @@ register_converter(converters.MyFloatConverter, 'my_float')
 register_converter(converters.MyDateConverter, 'my_date')
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name="horoscope_index"),
     path('types', views.types),
     path('<my_date:sign_zodiac>', views.get_my_date_converters),
     path('types/<str:type_of_el>', views.elements, name="astro_elements"),
