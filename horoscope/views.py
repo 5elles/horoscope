@@ -97,10 +97,13 @@ def elements(request, type_of_el):
 
 def get_info_about_sign_zodiac(request, sign_zodiac: str):
     description = zodiac_dict.get(sign_zodiac, None)
+    zodiacs = list(zodiac_dict)
     if sign_zodiac in zodiac_dict:
         data = {
             "description_zodiac": description[0],
             "sign": sign_zodiac,
+            "sign_name": zodiac_dict[sign_zodiac][0].split()[0],
+            "zodiacs": zodiacs,
         }
         return render(request, 'horoscope/info_zodiac.html', data)
     else:
